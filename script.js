@@ -150,10 +150,10 @@ function calculateWindChill(temperature, windSpeed) {
 
     console.log("Wind Speed: " + windSpeed);
 
-    
-    let windChill = 35.74 + (0.6215 * temperature) - 
-    (35.75 * Math.pow(windSpeed, 0.16)) + 
-    (0.4275 * temperature * Math.pow(windSpeed, 0.16));
+
+    let windChill = 35.74 + (0.6215 * temperature) -
+        (35.75 * Math.pow(windSpeed, 0.16)) +
+        (0.4275 * temperature * Math.pow(windSpeed, 0.16));
 
     windChill = Math.round(windChill);
 
@@ -200,6 +200,32 @@ function setIcon(weatherType) {
 
 
 function redirectToWeatherPage() {
+    // show the "weatherContainer" div
+    document.getElementById('weatherContainer').style.display = 'block';
+
+    // grab data from local storage
+    let weatherIcon = localStorage.getItem('iconPath');
+    let temperature = localStorage.getItem('temperature');
+    let weatherType = localStorage.getItem('weatherType');
+    let windSpeed = localStorage.getItem('windSpeed');
+    let windDirection = localStorage.getItem('windDirection');
+    let humidity = localStorage.getItem('humidity');
+    let windChill = localStorage.getItem('windChill');
+
+
+    // Update weather information on the page
+    document.getElementById('Temperature').textContent = temperature + "°";
+    document.getElementById('WindChill').textContent = windChill + "°";
+    document.getElementById('WeatherType').textContent = weatherType;
+    document.getElementById('WindSpeed').textContent = windSpeed;
+    document.getElementById('WindDirection').textContent = windDirection;
+    document.getElementById('Humidity').textContent = humidity + "%";
+
+    console.log("Weather Icon " + weatherIcon);
+
+    document.getElementById('WeatherIcon').innerHTML = `<img src="${weatherIcon}">`;
+
+    /*
     // Construct the URL with weather data as parameters
     let url = `weather.html?temperature=${localStorage.getItem('temperature')}
     &weatherType=${localStorage.getItem('weatherType')}
@@ -210,4 +236,5 @@ function redirectToWeatherPage() {
 
     // Redirect to the weather page with parameters
     window.location.href = url;
+    */
 }

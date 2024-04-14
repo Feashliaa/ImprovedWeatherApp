@@ -3,18 +3,39 @@ body {
     margin: 0;
 }
 
+h1 {
+    text-align: center;
+    color: #4a90e2;
+}
+
 #myMap {
     position: relative;
     height: 100vh;
     width: 100vw;
 }
 
-#getCoordsBtn {
+#weatherContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    min-width: 300px;
+    padding: 100px;
+    background-color: #fff;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    /* hide the weather container by default */
+    display: none;
+}
+
+#closeWeatherBtn {
     position: absolute;
     top: 10px;
-    left: 10px;
+    right: 10px;
     z-index: 1;
-    padding: 10px 20px;
+    padding: 10px;
     background-color: #007BFF;
     color: #FFFFFF;
     border: none;
@@ -24,6 +45,111 @@ body {
     font-weight: bold;
 }
 
+#closeWeatherBtn:hover {
+    background-color: #0056b3;
+}
+
+#getCoordsBtn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    /* Use right instead of left for positioning */
+    z-index: 1;
+    padding: 20px 40px;
+    background-color: #007BFF;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
 #getCoordsBtn:hover {
     background-color: #0056b3;
+}
+
+.weather-card {
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    width: 100%;
+
+    /* center the card */
+    margin: 0 auto;
+}
+
+/* at 800px, the card will take up 50% of the screen */
+@media (max-width: 800px) {
+    #weatherContainer {
+        width: 50vw;
+    }
+    .weather-card {
+        width: 50vw;
+    }
+}
+
+/* at 500px, make the #weatherContainer take up 90% of the screen */
+@media (max-width: 500px) {
+    #weatherContainer {
+        width: 90vw;
+    }
+}
+
+@media (max-width: 300px) {
+
+    #weatherContainer {
+        width: 90vw;
+    }
+
+    /* hide the icon on smaller screens */
+    #WeatherIcon {
+        display: none;
+    }
+}
+
+#WeatherIcon {
+    margin-bottom: 10px;
+    background-color: #f5f5f5;
+    border-radius: 50%;
+    width: 50px; /* Set initial width */
+    height: 50px; /* Set initial height */
+
+    /* default image G:\test_files\Azure Projects\Azure Maps Implementation\weather-icons\clear.png */
+    background-image: url('weather-icons/clear.png');
+    background-size: cover; /* Ensure the background image covers the entire area */
+
+    /* rounded corners */
+    border-radius: 50%;
+
+    float: right;
+    /* Float the icon to the right */
+    margin-left: 20px;
+    /* Add some space between the icon and text */
+    transition: width 0.3s ease, height 0.3s ease; /* Add transition for smooth resizing */
+}
+
+.weather-card>div {
+    /* Clear the float to ensure the text does not wrap around the icon */
+    overflow: hidden;
+}
+
+#WeatherIcon img {
+    display: none; /* Hide any potential img elements inside #WeatherIcon */
+}
+
+#Temperature,
+#WeatherType,
+#WindSpeed,
+#WindDirection,
+#Humidity,
+#WindChill,
+#Location {
+    font-size: 18px;
+    color: #333;
+    margin: 5px 0;
 }

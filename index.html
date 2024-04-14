@@ -9,13 +9,44 @@
     <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css"
         type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
+    <script>
+        function closeWeather() {
+            document.getElementById("weatherContainer").style.display = "none";
+        }
+    </script>
 </head>
 
 <body onload="InitMap()">
     <div id="myMap"></div>
-    <div id="getCoordsBtn" onclick="grabCoords()">Get Weather Data</div>
+    <div id="getCoordsBtn" onclick="grabCoords()">Get Weather</div>
+    <div id="weatherContainer">
+        <div id="closeWeatherBtn" onclick="closeWeather()">X</div>
+        <h1>Weather Forecast</h1>
+        <div class="weather-card">
+            <div id="WeatherIcon"></div>
+            <div>
+                <p>Temperature: <span id="Temperature"></span></p>
+            </div>
+            <div>
+                <p>Feels Like: <span id="WindChill"></span></p>
+            </div>
+            <div>
+                <p>Weather Type: <span id="WeatherType"></span></p>
+            </div>
+            <div>
+                <p>Wind Speed: <span id="WindSpeed"></span></p>
+            </div>
+            <div>
+                <p>Wind Direction: <span id="WindDirection"></span></p>
+            </div>
+            <div>
+                <p>Humidity: <span id="Humidity"></span></p>
+            </div>
+        </div>
+    </div>
 
-    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"type="application/javascript" defer></script>
+    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js" type="application/javascript"
+        defer></script>
     <script src="script.js" type="application/javascript" defer></script>
 </body>
 
