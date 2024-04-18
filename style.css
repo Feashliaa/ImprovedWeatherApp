@@ -44,7 +44,9 @@ h1 {
     background-color: #007BFF;
     color: #FFFFFF;
     border: none;
+    /* border-radius-top-right */
     border-top-right-radius: 5px;
+
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;

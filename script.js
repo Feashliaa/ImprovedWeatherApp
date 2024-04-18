@@ -129,8 +129,13 @@ function grabCoords() {
         var coords = point.getCoordinates();
         console.log(coords);
 
-        // send coordinates to weather.gov API
-        SendDataToApi(coords[1], coords[0]);
+        // reverse geocode the coordinates
+        reverseGeocode(coords[1], coords[0]);
+
+        // wait for reverse geocoding to complete
+        setTimeout(function () {
+            SendDataToApi(coords[1], coords[0]);
+        }, 2000);
     } else {
         console.error('Point not initialized.');
     }
@@ -278,7 +283,8 @@ function redirectToWeatherPage() {
 
     console.log("Weather Icon " + weatherIcon);
 
-    document.getElementById('WeatherIcon').innerHTML = `<img src="${weatherIcon}">`;
+    // set the weather icon on the page "background-image: url('iconPath');"
+    document.getElementById('WeatherIcon').style.backgroundImage = `url('${weatherIcon}')`;
 
     /*
     // Construct the URL with weather data as parameters
@@ -293,3 +299,4 @@ function redirectToWeatherPage() {
     window.location.href = url;
     */
 }
+
