@@ -5,7 +5,6 @@ function InitMap() {
     let longitude;
     let latitude;
 
-
     // Check if the browser supports Geolocation
     if ("geolocation" in navigator) {
         // Get the user's current position
@@ -56,14 +55,70 @@ function InitMap() {
 
                     map.events.add('click', function (e) {
                         point.setCoordinates(e.position);
+
+                        // Get the updated latitude and longitude from the click event
+                        const clickLatitude = e.position[0];
+                        const clickLongitude = e.position[1];
+
+                        // Call reverseGeocode with the updated coordinates
+                        reverseGeocode(clickLongitude, clickLatitude);
                     });
 
+
                     map.layers.add(new atlas.layer.SymbolLayer(dataSource, null));
+
+
                 });
             })
             .catch(error => {
                 console.error('Error fetching map options:', error);
             });
+    }
+
+}
+
+function reverseGeocode(latitude, longitude) {
+
+    try {
+        // fet subscription key from server.js
+        fetch('/api/subscriptionKey')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                let subscriptionKey = data.subscriptionKey;
+                const format = 'json'; // or any other format you prefer
+                let query = `${latitude},${longitude}`;
+                let url = `https://atlas.microsoft.com/search/address/reverse/${format}?api-version=1.0&query=${query}&subscription-key=${subscriptionKey}`;
+
+                return fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Reverse geocoding request failed');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        let address = data.addresses[0];
+                        let localName = address.address.localName + ', ' + address.address.countrySubdivisionName;
+                        // set localName in local storage
+                        localStorage.setItem('localName', localName);
+                        console.log('Local Name: ', localStorage.getItem('localName'));
+                    })
+                    .catch(error => {
+                        console.error('Error during reverse geocoding:', error);
+                        return null;
+                    });
+            })
+            .catch(error => {
+                console.error('Error fetching subscription key:', error);
+            });
+    }
+    catch (error) {
+        console.error('Error during reverse geocoding:', error);
     }
 }
 
@@ -130,8 +185,6 @@ async function SendDataToApi(lat, lon) {
         localStorage.setItem('humidity', humidity);
         localStorage.setItem('windChill', windChill);
         localStorage.setItem('iconPath', iconPath);
-
-
 
         // Update UI or perform other actions with the data
         redirectToWeatherPage();
@@ -203,6 +256,8 @@ function redirectToWeatherPage() {
     // show the "weatherContainer" div
     document.getElementById('weatherContainer').style.display = 'block';
 
+    let location = localStorage.getItem('localName');
+
     // grab data from local storage
     let weatherIcon = localStorage.getItem('iconPath');
     let temperature = localStorage.getItem('temperature');
@@ -212,8 +267,8 @@ function redirectToWeatherPage() {
     let humidity = localStorage.getItem('humidity');
     let windChill = localStorage.getItem('windChill');
 
-
     // Update weather information on the page
+    document.getElementById('Location').textContent = location;
     document.getElementById('Temperature').textContent = temperature + "°";
     document.getElementById('WindChill').textContent = windChill + "°";
     document.getElementById('WeatherType').textContent = weatherType;

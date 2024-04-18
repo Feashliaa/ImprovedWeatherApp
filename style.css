@@ -8,6 +8,11 @@ h1 {
     color: #4a90e2;
 }
 
+#Location {
+    font-size: 24px;
+    color: #4a90e2;
+}
+
 #myMap {
     position: relative;
     height: 100vh;
@@ -32,14 +37,14 @@ h1 {
 
 #closeWeatherBtn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0;
+    right: 0;
     z-index: 1;
     padding: 10px;
     background-color: #007BFF;
     color: #FFFFFF;
     border: none;
-    border-radius: 5px;
+    border-top-right-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
@@ -75,7 +80,7 @@ h1 {
     margin-bottom: 20px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 
     width: 100%;
 
@@ -147,8 +152,7 @@ h1 {
 #WindSpeed,
 #WindDirection,
 #Humidity,
-#WindChill,
-#Location {
+#WindChill {
     font-size: 18px;
     color: #333;
     margin: 5px 0;

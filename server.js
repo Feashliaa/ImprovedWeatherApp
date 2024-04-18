@@ -26,6 +26,11 @@ app.get('/api/mapOptions', (req, res) => {
     res.json(mapOptions);
 });
 
+app.get('/api/subscriptionKey', (req, res) => {
+    res.json({ subscriptionKey: subscriptionKey });
+});
+
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });

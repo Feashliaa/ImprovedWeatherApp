@@ -19,6 +19,12 @@ h1 {
     color: #4a90e2;
 }
 
+#Location {
+    font-size: 24px;
+    color: #4a90e2;
+}
+
+
 .weather-card {
     padding: 20px;
     margin-bottom: 20px;
@@ -35,11 +41,13 @@ h1 {
     /* default image G:\test_files\Azure Projects\Azure Maps Implementation\weather-icons\clear.png */
     background-image: url('weather-icons/clear.png');
 
-    float: right; /* Float the icon to the right */
-    margin-left: 20px; /* Add some space between the icon and text */
+    float: right;
+    /* Float the icon to the right */
+    margin-left: 20px;
+    /* Add some space between the icon and text */
 }
 
-.weather-card > div {
+.weather-card>div {
     /* Clear the float to ensure the text does not wrap around the icon */
     overflow: hidden;
 }
@@ -55,8 +63,7 @@ h1 {
 #WindSpeed,
 #WindDirection,
 #Humidity,
-#WindChill,
-#Location {
+#WindChill {
     font-size: 18px;
     color: #333;
     margin: 5px 0;
