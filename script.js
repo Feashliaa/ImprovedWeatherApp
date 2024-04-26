@@ -1,5 +1,64 @@
-var map; // Declare map globally
-var point; // Declare point globally
+var map;
+var point;
+var isSatelliteView = false; // Initially set to false for road view
+
+function toggleSatellite() {
+    console.log('Toggling satellite view...');
+    // if false, it's set to road, if true, it's set to satellite
+    let updatedStyle = isSatelliteView ? 'road' : 'satellite';
+    isSatelliteView = !isSatelliteView;
+    map.setStyle({ style: updatedStyle });
+}
+
+async function initializeMap(latitude, longitude, style) {
+    console.log('Initializing map with latitude:', latitude, 'and longitude:', longitude);
+    console.log('Style:', style);
+
+    try {
+        const response = await fetch(`/api/mapOptions?latitude=${latitude}&longitude=${longitude}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const mapOptions = await response.json();
+        console.log('Map Options:', mapOptions);
+        map = new atlas.Map('myMap', {
+            ...mapOptions,
+            style: `atlas://styles/${style}`,
+            center: [longitude, latitude],
+            zoom: 12
+        });
+
+        // Add a point to the map at the user's location
+        map.events.add('ready', function () {
+            var dataSource = new atlas.source.DataSource();
+            map.sources.add(dataSource);
+            point = new atlas.Shape(new atlas.data.Point([longitude, latitude]));
+            dataSource.add([point]);
+
+            map.events.add('click', function (e) {
+                point.setCoordinates(e.position);
+
+                // Get the updated latitude and longitude from the click event
+                const clickLatitude = e.position[0];
+                const clickLongitude = e.position[1];
+
+                // Call reverseGeocode with the updated coordinates
+                reverseGeocode(clickLongitude, clickLatitude);
+            });
+
+            map.layers.add(new atlas.layer.SymbolLayer(dataSource, null));
+
+            map.setTraffic({
+                flow: 'relative',
+                incidents: true,
+                legend: true
+            });
+        });
+    } catch (error) {
+        console.error('Error fetching map options:', error);
+    }
+}
 
 function InitMap() {
     let longitude;
@@ -9,21 +68,21 @@ function InitMap() {
     if ("geolocation" in navigator) {
         // Get the user's current position
         navigator.geolocation.getCurrentPosition(
-            function (position) {
+            async function (position) {
                 // Access the latitude and longitude from the position object
                 longitude = position.coords.longitude;
                 latitude = position.coords.latitude;
-                // Initialize the map with the user's location
-                initializeMap(latitude, longitude);
+                // Initialize the map with the user's location and default style
+                await initializeMap(latitude, longitude, 'road');
             },
             function (error) {
                 // Handle any errors that occur during geolocation
                 console.error("Error getting geolocation:", error);
-                // Fallback coordinates if geolocation fails
-                // [-76.10, 42.14]
+                // Fallback coordinates if geolocation fail
                 longitude = -76.10;
                 latitude = 42.14;
-                initializeMap(latitude, longitude);
+                // Initialize the map with fallback coordinates and default style
+                initializeMap(latitude, longitude, 'road');
             }
         );
     } else {
@@ -32,50 +91,13 @@ function InitMap() {
         // Fallback coordinates if geolocation is not supported
         longitude = -76.0652;
         latitude = 42.1110;
-        initializeMap(latitude, longitude);
+        // Initialize the map with fallback coordinates and default style
+        initializeMap(latitude, longitude, 'road');
     }
-
-    function initializeMap(latitude, longitude) {
-        // Make a request to the server to get the map options including the subscription key
-        fetch(`/api/mapOptions?latitude=${latitude}&longitude=${longitude}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(mapOptions => {
-                map = new atlas.Map('myMap', mapOptions);
-
-                map.events.add('ready', function () {
-                    var dataSource = new atlas.source.DataSource();
-                    map.sources.add(dataSource);
-                    point = new atlas.Shape(new atlas.data.Point([longitude, latitude]));
-                    dataSource.add([point]);
-
-                    map.events.add('click', function (e) {
-                        point.setCoordinates(e.position);
-
-                        // Get the updated latitude and longitude from the click event
-                        const clickLatitude = e.position[0];
-                        const clickLongitude = e.position[1];
-
-                        // Call reverseGeocode with the updated coordinates
-                        reverseGeocode(clickLongitude, clickLatitude);
-                    });
-
-
-                    map.layers.add(new atlas.layer.SymbolLayer(dataSource, null));
-
-
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching map options:', error);
-            });
-    }
-
+    // Add event listener to the button after map initialization
+    document.getElementById('toggleSatelliteBtn').addEventListener('click', toggleSatellite);
 }
+
 
 function reverseGeocode(latitude, longitude) {
 
@@ -153,11 +175,11 @@ async function SendDataToApi(lat, lon) {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}. URL: ${WeatherApiURL}`);
         }
 
         let data = await response.json();
-        console.log("Data" + data);
+        console.log("Weather API Data:", JSON.stringify(data));
 
         // Extract the forecastHourlyUrl from the JSON response
         let forecastHourlyUrl = data.properties.forecastHourly;
@@ -165,11 +187,11 @@ async function SendDataToApi(lat, lon) {
         let hourlyForecastResponse = await fetch(forecastHourlyUrl);
 
         if (!hourlyForecastResponse.ok) {
-            throw new Error(`HTTP error! Status: ${hourlyForecastResponse.status}`);
+            throw new Error(`HTTP error! Status: ${hourlyForecastResponse.status}. URL: ${forecastHourlyUrl}`);
         }
 
         let hourlyForecastContent = await hourlyForecastResponse.json();
-        console.log("Hourly Forecast Content" + hourlyForecastContent);
+        console.log("Hourly Forecast Content:", JSON.stringify(hourlyForecastContent));
 
         // Extract temperature and weatherType from hourly forecast and store in local storage
         let temperature = hourlyForecastContent.properties.periods[0].temperature;
@@ -179,7 +201,7 @@ async function SendDataToApi(lat, lon) {
         let humidity = hourlyForecastContent.properties.periods[0].relativeHumidity.value;
 
         let windChill = calculateWindChill(temperature, windSpeed);
-        console.log("Wind Chill: " + windChill);
+        console.log("Wind Chill:", windChill);
 
         let iconPath = setIcon(weatherType);
 
@@ -194,7 +216,7 @@ async function SendDataToApi(lat, lon) {
         // Update UI or perform other actions with the data
         redirectToWeatherPage();
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error in SendDataToApi:', error);
     }
 }
 
@@ -219,42 +241,24 @@ function calculateWindChill(temperature, windSpeed) {
 }
 
 function setIcon(weatherType) {
-    let iconPath = '';
-    switch (true) {
-        case weatherType.includes('Sunny'):
-            iconPath = 'weather-icons/clear.png';
-            break;
-        case weatherType.includes('Thunderstorm'):
-            iconPath = 'weather-icons/thunderstorms.png';
-            break;
-        case weatherType.includes('Rain'):
-            iconPath = 'weather-icons/rain.png';
-            break;
-        case weatherType.includes('Snow'):
-            iconPath = 'weather-icons/snow.png';
-            break;
-        case weatherType.includes('Cloudy'):
-            iconPath = 'weather-icons/cloudy.png';
-            break;
-        case weatherType.includes('Fog'):
-            iconPath = 'weather-icons/fog.png';
-            break;
-        case weatherType.includes('Partly Cloudy'):
-            iconPath = 'weather-icons/partly-cloudy.png';
-            break;
-        case weatherType.includes('Haze'):
-            iconPath = 'weather-icons/haze.png';
-            break;
-        case weatherType.includes('Windy'):
-            iconPath = 'weather-icons/windy.png';
-            break;
-        default:
-            iconPath = 'weather-icons/clear.png';
-            break;
-    }
+    const weatherIcons = {
+        'Sunny': 'weather-icons/clear.png',
+        'Thunderstorm': 'weather-icons/thunderstorms.png',
+        'Rain': 'weather-icons/rain.png',
+        'Snow': 'weather-icons/snow.png',
+        'Cloudy': 'weather-icons/cloudy.png',
+        'Fog': 'weather-icons/fog.png',
+        'Partly Cloudy': 'weather-icons/partly-cloudy.png',
+        'Haze': 'weather-icons/haze.png',
+        'Windy': 'weather-icons/windy.png',
+        'default': 'weather-icons/clear.png'
+    };
 
+    const iconPath = weatherIcons[Object.keys(weatherIcons).find
+        (key => weatherType.includes(key))] || weatherIcons['default'];
     return iconPath;
 }
+
 
 
 function redirectToWeatherPage() {
@@ -285,18 +289,4 @@ function redirectToWeatherPage() {
 
     // set the weather icon on the page "background-image: url('iconPath');"
     document.getElementById('WeatherIcon').style.backgroundImage = `url('${weatherIcon}')`;
-
-    /*
-    // Construct the URL with weather data as parameters
-    let url = `weather.html?temperature=${localStorage.getItem('temperature')}
-    &weatherType=${localStorage.getItem('weatherType')}
-    &windSpeed=${localStorage.getItem('windSpeed')}
-    &windDirection=${localStorage.getItem('windDirection')}
-    &humidity=${localStorage.getItem('humidity')}
-    &windChill=${localStorage.getItem('windChill')}`;
-
-    // Redirect to the weather page with parameters
-    window.location.href = url;
-    */
 }
-

@@ -9,16 +9,15 @@
     <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css"
         type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
-    <script>
-        function closeWeather() {
-            document.getElementById("weatherContainer").style.display = "none";
-        }
-    </script>
 </head>
 
 <body onload="InitMap()">
     <div id="myMap"></div>
     <div id="getCoordsBtn" onclick="grabCoords()">Get Weather</div>
+    <label class="switch" id="toggleSatelliteBtn">
+        <input type="checkbox">
+        <span class="slider round"></span>
+    </label>
     <div id="weatherContainer">
         <div id="closeWeatherBtn" onclick="closeWeather()">X</div>
         <h1>Weather Forecast</h1>
@@ -49,6 +48,11 @@
     <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js" type="application/javascript"
         defer></script>
     <script src="script.js" type="application/javascript" defer></script>
+    <script>
+        function closeWeather() {
+            document.getElementById("weatherContainer").style.display = "none";
+        }
+    </script>
 </body>
 
 </html>
