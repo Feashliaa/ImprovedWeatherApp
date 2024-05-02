@@ -42,9 +42,7 @@ h1 {
     background-image: url('weather-icons/clear.png');
 
     float: right;
-    /* Float the icon to the right */
     margin-left: 20px;
-    /* Add some space between the icon and text */
 }
 
 .weather-card>div {

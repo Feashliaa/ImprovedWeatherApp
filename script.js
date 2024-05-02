@@ -187,6 +187,7 @@ async function SendDataToApi(lat, lon) {
         let hourlyForecastResponse = await fetch(forecastHourlyUrl);
 
         if (!hourlyForecastResponse.ok) {
+            alert("Error: Unable to fetch weather data. Please try again later.");
             throw new Error(`HTTP error! Status: ${hourlyForecastResponse.status}. URL: ${forecastHourlyUrl}`);
         }
 
@@ -217,6 +218,7 @@ async function SendDataToApi(lat, lon) {
         redirectToWeatherPage();
     } catch (error) {
         console.error('Error in SendDataToApi:', error);
+        alert("Error: Unable to fetch weather data. Please try again later.");
     }
 }
 
@@ -229,7 +231,6 @@ function calculateWindChill(temperature, windSpeed) {
     windSpeed = parseFloat(windSpeed.match(/\d+/)[0]);
 
     console.log("Wind Speed: " + windSpeed);
-
 
     let windChill = 35.74 + (0.6215 * temperature) -
         (35.75 * Math.pow(windSpeed, 0.16)) +
@@ -263,7 +264,7 @@ function setIcon(weatherType) {
 
 function redirectToWeatherPage() {
     // show the "weatherContainer" div
-    document.getElementById('weatherContainer').style.display = 'block';
+    document.getElementById('weatherContainer').style.display = 'flex';
 
     let location = localStorage.getItem('localName');
 

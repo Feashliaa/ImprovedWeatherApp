@@ -8,11 +8,6 @@ h1 {
     color: #4a90e2;
 }
 
-#Location {
-    font-size: 24px;
-    color: #4a90e2;
-}
-
 #myMap {
     position: relative;
     height: 100vh;
@@ -25,14 +20,81 @@ h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 50%;
-    min-width: 300px;
-    padding: 100px;
+    min-width: 325px;
+    padding: 0;
     background-color: #fff;
     border-radius: 25px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-    /* hide the weather container by default */
+    height: 55%;
+    min-height: 525px;
     display: none;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.location-container {
+    text-align: center;
+    color: #4a90e2;
+    margin-bottom: 10px;
+}
+
+.location-container h1,
+.location-container span {
+    display: inline;
+}
+
+#Location {
+    font-size: inherit;
+    color: inherit;
+    text-align: center;
+    margin-bottom: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+.weather-card {
+    position: relative;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    width: 80%;
+    /* Changed from fixed width to percentage */
+    margin: 0 auto;
+}
+
+#WeatherIcon {
+    margin-bottom: 10px;
+    background-color: #f5f5f5;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-image: url('weather-icons/clear.png');
+    background-size: cover;
+    border-radius: 50%;
+    float: right;
+    margin-left: 20px;
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.weather-card>div {
+    overflow: hidden;
+}
+
+#WeatherIcon img {
+    display: none;
+}
+
+#Temperature,
+#WeatherType,
+#WindSpeed,
+#WindDirection,
+#Humidity,
+#WindChill {
+    font-size: 18px;
+    color: #333;
+    margin: 5px 0;
 }
 
 #closeWeatherBtn {
@@ -44,7 +106,6 @@ h1 {
     background-color: #007BFF;
     color: #FFFFFF;
     border: none;
-    /* border-radius-top-right */
     border-top-right-radius: 5px;
 
     cursor: pointer;
@@ -56,6 +117,7 @@ h1 {
     background-color: #0056b3;
 }
 
+/* The Toggle Switch for Satellite and Road */
 .switch {
     position: absolute;
     top: 10px;
@@ -124,93 +186,4 @@ input:checked+.slider:before {
 
 #getCoordsBtn:hover {
     background-color: #0056b3;
-}
-
-.weather-card {
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-
-    width: 100%;
-
-    /* center the card */
-    margin: 0 auto;
-}
-
-/* at 800px, the card will take up 50% of the screen */
-@media (max-width: 800px) {
-    #weatherContainer {
-        width: 50vw;
-    }
-
-    .weather-card {
-        width: 50vw;
-    }
-}
-
-/* at 500px, make the #weatherContainer take up 90% of the screen */
-@media (max-width: 500px) {
-    #weatherContainer {
-        width: 90vw;
-    }
-}
-
-@media (max-width: 300px) {
-
-    #weatherContainer {
-        width: 90vw;
-    }
-
-    /* hide the icon on smaller screens */
-    #WeatherIcon {
-        display: none;
-    }
-}
-
-#WeatherIcon {
-    margin-bottom: 10px;
-    background-color: #f5f5f5;
-    border-radius: 50%;
-    width: 50px;
-    /* Set initial width */
-    height: 50px;
-    /* Set initial height */
-
-    /* default image G:\test_files\Azure Projects\Azure Maps Implementation\weather-icons\clear.png */
-    background-image: url('weather-icons/clear.png');
-    background-size: cover;
-    /* Ensure the background image covers the entire area */
-
-    /* rounded corners */
-    border-radius: 50%;
-
-    float: right;
-    /* Float the icon to the right */
-    margin-left: 20px;
-    /* Add some space between the icon and text */
-    transition: width 0.3s ease, height 0.3s ease;
-    /* Add transition for smooth resizing */
-}
-
-.weather-card>div {
-    /* Clear the float to ensure the text does not wrap around the icon */
-    overflow: hidden;
-}
-
-#WeatherIcon img {
-    display: none;
-    /* Hide any potential img elements inside #WeatherIcon */
-}
-
-#Temperature,
-#WeatherType,
-#WindSpeed,
-#WindDirection,
-#Humidity,
-#WindChill {
-    font-size: 18px;
-    color: #333;
-    margin: 5px 0;
 }
