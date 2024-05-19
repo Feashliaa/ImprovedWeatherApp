@@ -1,6 +1,7 @@
 var map;
 var point;
 var isSatelliteView = false; // Initially set to false for road view
+let mapInit = false;
 
 function toggleSatellite() {
     console.log('Toggling satellite view...');
@@ -14,6 +15,11 @@ async function initializeMap(latitude, longitude, style) {
     console.log('Initializing map with latitude:', latitude, 'and longitude:', longitude);
     console.log('Style:', style);
 
+    if (mapInit) {
+        console.log('Map already initialized.');
+        return;
+    }
+
     try {
         const response = await fetch(`/api/mapOptions?latitude=${latitude}&longitude=${longitude}`);
         if (!response.ok) {
@@ -26,7 +32,7 @@ async function initializeMap(latitude, longitude, style) {
             ...mapOptions,
             style: `atlas://styles/${style}`,
             center: [longitude, latitude],
-            zoom: 12
+            zoom: 12,
         });
 
         // Add a point to the map at the user's location
